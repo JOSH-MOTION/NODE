@@ -1,0 +1,59 @@
+//middleware 
+
+Middleware is basically a function that sits between the request and the response.
+It looks at the incoming request, can do something with it (like logging, authentication, parsing data), and then either:
+
+Ends the request by sending a response, OR
+
+Passes control to the next middleware/route handler by calling next().
+
+
+
+const PORT = 3000;
+const express = require("express");
+const Path = require('path')
+
+const server = express("server")
+
+const middleware = (req,res,next)=>{
+ 
+ console.log("middleware working ")
+    next()
+}
+
+//routes
+server.use(middleware)
+server.get('/', (req,res)=>res.send('its working'))
+
+
+
+
+server.listen(PORT,()=> console.log("server is working perfectly"))
+
+
+// Week 3 
+/**
+ * 1. create bank
+ * 2. update bank
+ * 3. delete bank
+ * 4. access a list of banks 
+ */
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 1. name
+ * 2.branch
+ * 3.location
+ * 4.address
+ * 5. phone
+ */
+
+
+{name,location,branch,phone,address,accountNumber}
