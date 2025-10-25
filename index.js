@@ -1,5 +1,7 @@
 // require
+const { retrieveBanksController, updateBanksController,deleteBanksController,createBanksController,} = require("./controllers") 
 const express = require("express")
+const mongoose = require("mongoose")
 
 //create the server
 const server = express()
@@ -7,92 +9,7 @@ const server = express()
 // middleware
 server.use(express.json());
 
-// Bank batabase
-let banksDb = []
 
-// model 
-class BankModel  {
-    constructor({name,location,branch,phone,address,accountNumber}){
-            this.name = name;
-            this.location = location;
-            this.branch = branch;
-            this.phone = phone;
-            this.address = address;
-            this.accountNumber = accountNumber
-    }
-
-    save(){
-        banksDb.push(this);
-        return this
-    }
-
-    static all(){
-        return banksDb
-    }
-
-    static update(updateInfo = {}){
-
-        banksDb = banksDb.map(bank =>{
-            if(bank.name === updateInfo.name){
-                return {...bank, ...updateInfo};
-            }
-
-            return bank;
-        })
- return banksDb.find(bank => bank.name === updateInfo.name);
-    }
-
-    static delete({name}){
-        let deletedBank = null
-        banksDb.filter(bank => {
-            if(bank.name !== name){
-                return true;
-            }
-            return false
-        });
-        return deletedBank
-
-    }
-
-   
-}
-
-
-
-
-// controllers
-const retrieveBanksController = (req,res) => {
-    // retrieve
-   const banks = BankModel.all();
-   res.json({data:banks})
-}
-
-const createBanksController = (req,res)=>{
-    // creating
-    const {name,location,branch,phone,address,accountNumber} = req.body;
-
-
-    const bank = new BankModel({name,location,branch,phone,address,accountNumber})
-
-    bank.save();
-
-    res.json({message:"bank created successfully", data:bank})
-}
-
-const updateBanksController = (req,res)=>{
-// update
-  const {name,location,branch,phone,address,accountNumber} = req.body;
-
-  const updatedBank =  BankModel.update({name,location,branch,phone,address,accountNumber})
-  res.json({message:"updated successfully", data: updatedBank})
-}
-
-const deleteBanksController = (req,res)=>{
-        // delete
-        const {name} = req.body;
-        const deletedBank = BankModel.delete({name});
-        res.json({message:"bank deleted succesfully", data: deletedBank})
-}
 
 
 
@@ -103,9 +20,14 @@ server.get("/banks",retrieveBanksController)
 //  create bank
 server.post("/banks",createBanksController)
 //   update bank
-server.put("/banks",updateBanksController)
+// server.put("/banks",updateBanksController)
 //  delete bank
-server.delete("/banks",deleteBanksController)
+// server.delete("/banks",deleteBanksController)
 
+mongoose.connect('mongodb+srv://Banks:ZGToQq3HufBKPnYO@cluster0.quschgn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+
+
+// mongoose.connect('mongodb+srv://joshuadoe168_db_user:CPcH6MuVCI8Vn3iH@cluster0.quschgn.mongodb.net/?appName=Cluster0')
 // server start
+
 server.listen(3000,()=> console.log("its working"))
