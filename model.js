@@ -9,6 +9,10 @@ const BankSchema = new mongoose.Schema({
     accountNumber:String
 });
 
+
+
 const BankModel = mongoose.model("Banks", BankSchema)
 
 module.exports =  BankModel
+
+
