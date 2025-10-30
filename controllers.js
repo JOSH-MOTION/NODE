@@ -26,25 +26,46 @@ const createBanksController = (req,res)=>{
 }
 
     
-// const updateBanksController = (req,res)=>{
-// // update
-//   const {name,location,branch,phone,address,accountNumber} = req.body;
+const updateBanksController = (req,res)=>{
+// update
+  const {id,name,location,branch,address,accountNumber} = req.body;
 
-//   const updatedBank =  BankModel.update({name,location,branch,phone,address,accountNumber})
-//   res.json({message:"updated successfully", data: updatedBank})
-// }
+ BankModel.findById(id).then( bank => {
+     if(bank){
+        bank.name = name;
+        bank.location = location;
+        bank.branch = branch;
+        bank.address = address;
+        bank.accountNumber = accountNumber
 
-// const deleteBanksController = (req,res)=>{
-//         // delete
-//         const {name} = req.body;
-//         const deletedBank = BankModel.delete({name});
-//         res.json({message:"bank deleted succesfully", data: deletedBank})
-// }
+        bank.save();
+
+        res.json({message:"updated successfully", data: bank})
+     }
+      res.json({message:"document could not be found"})
+
+ }).catch(error => console.log(error))
+}
+  
+
+
+const deleteBanksController = (req,res)=>{
+        // delete
+        const {id} = req.body
+        const {name} = req.body;
+        BankModel.findByIdAndDelete(id).then( deletedBank => {
+            if (deletedBank) {
+             res.json({message:"bank deleted succesfully", data: deletedBank})
+                return;
+            }
+            res.json({message:"bank not found "})
+        })
+}
 
 
 module.exports = {
     retrieveBanksController,
-    // updateBanksController,
-    // deleteBanksController,
+    updateBanksController,
+    deleteBanksController,
     createBanksController,
 }

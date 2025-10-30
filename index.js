@@ -20,9 +20,9 @@ server.get("/banks",retrieveBanksController)
 //  create bank
 server.post("/banks",createBanksController)
 //   update bank
-// server.put("/banks",updateBanksController)
+server.put("/banks/",updateBanksController)
 //  delete bank
-// server.delete("/banks",deleteBanksController)
+server.delete("/banks",deleteBanksController)
 
 mongoose.connect('mongodb+srv://Banks:ZGToQq3HufBKPnYO@cluster0.quschgn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 
