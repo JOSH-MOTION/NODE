@@ -1,111 +1,52 @@
-// require
-const express = require("express")
+// Import required modules and controllers
+const { 
+  retrieveBanksController, 
+  updateBanksController,
+  deleteBanksController,
+  createBanksController, 
+  createAccountController 
+} = require("./controllers");
 
-//create the server
-const server = express()
+const express = require("express");
+const mongoose = require("mongoose");
 
-// middleware
+// Create an Express server instance
+const server = express();
+
+// Middleware to parse incoming JSON data
 server.use(express.json());
 
-// Bank batabase
-let banksDb = []
 
-// model 
-class BankModel  {
-    constructor({name,location,branch,phone,address,accountNumber}){
-            this.name = name;
-            this.location = location;
-            this.branch = branch;
-            this.phone = phone;
-            this.address = address;
-            this.accountNumber = accountNumber
-    }
+// ========================== ROUTES ==========================
 
-    save(){
-        banksDb.push(this);
-        return this
-    }
+// ✅ Retrieve all banks
+server.get("/banks", retrieveBanksController);
 
-    static all(){
-        return banksDb
-    }
+// ✅ Create a new bank
+server.post("/banks", createBanksController);
 
-    static update(updateInfo = {}){
+// ✅ Update a bank (you can modify this to include an ID parameter if needed)
+server.put("/banks", updateBanksController);
 
-        banksDb = banksDb.map(bank =>{
-            if(bank.name === updateInfo.name){
-                return {...bank, ...updateInfo};
-            }
+// ✅ Delete a bank (same — usually you'd include an ID in the route)
+server.delete("/banks", deleteBanksController);
 
-            return bank;
-        })
- return banksDb.find(bank => bank.name === updateInfo.name);
-    }
-
-    static delete({name}){
-        let deletedBank = null
-        banksDb.filter(bank => {
-            if(bank.name !== name){
-                return true;
-            }
-            return false
-        });
-        return deletedBank
-
-    }
-
-   
-}
+// ✅ Create a new account
+// (Fixed typo: it was './account' instead of '/account')
+server.post("/account", createAccountController);
 
 
+// ========================== DATABASE CONNECTION ==========================
+
+// Connect to MongoDB Atlas database
+mongoose.connect(
+  'mongodb+srv://Banks:ZGToQq3HufBKPnYO@cluster0.quschgn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+)
+.then(() => console.log("✅ Connected to MongoDB"))
+.catch(err => console.error("❌ Database connection error:", err));
 
 
-// controllers
-const retrieveBanksController = (req,res) => {
-    // retrieve
-   const banks = BankModel.all();
-   res.json({data:banks})
-}
+// ========================== SERVER START ==========================
 
-const createBanksController = (req,res)=>{
-    // creating
-    const {name,location,branch,phone,address,accountNumber} = req.body;
-
-
-    const bank = new BankModel({name,location,branch,phone,address,accountNumber})
-
-    bank.save();
-
-    res.json({message:"bank created successfully", data:bank})
-}
-
-const updateBanksController = (req,res)=>{
-// update
-  const {name,location,branch,phone,address,accountNumber} = req.body;
-
-  const updatedBank =  BankModel.update({name,location,branch,phone,address,accountNumber})
-  res.json({message:"updated successfully", data: updatedBank})
-}
-
-const deleteBanksController = (req,res)=>{
-        // delete
-        const {name} = req.body;
-        const deletedBank = BankModel.delete({name});
-        res.json({message:"bank deleted succesfully", data: deletedBank})
-}
-
-
-
-// routes
-// retrieve banks 
-server.get("/banks",retrieveBanksController)
-
-//  create bank
-server.post("/banks",createBanksController)
-//   update bank
-server.put("/banks",updateBanksController)
-//  delete bank
-server.delete("/banks",deleteBanksController)
-
-// server start
-server.listen(3000,()=> console.log("its working"))
+// Start the Express server on port 3000
+server.listen(3000, () => console.log("🚀 Server is running on port 3000"));
