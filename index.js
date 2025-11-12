@@ -1,47 +1,32 @@
-// Import required modules and controllers
-const { 
-  retrieveBanksController, 
-  updateBanksController,
-  deleteBanksController,
-  createBanksController, 
-  createAccountController 
-} = require("./controllers");
-
 const express = require("express");
 const mongoose = require("mongoose");
 
+// Load environment variables from a .env file into process.env
+require('dotenv').config()
+
+// Port configuration
+const PORT = process.env.PORT || 5000
+
 // Create an Express server instance
 const server = express();
+
+// ========================== IMPORT ROUTES ==========================
+const BankRoutes = require("./routes/bankRoutes");
+const AccountRoutes = require("./routes/accountRoute");
 
 // Middleware to parse incoming JSON data
 server.use(express.json());
 
 
 // ========================== ROUTES ==========================
-
-// ✅ Retrieve all banks
-server.get("/banks", retrieveBanksController);
-
-// ✅ Create a new bank
-server.post("/banks", createBanksController);
-
-// ✅ Update a bank (you can modify this to include an ID parameter if needed)
-server.put("/banks", updateBanksController);
-
-// ✅ Delete a bank (same — usually you'd include an ID in the route)
-server.delete("/banks", deleteBanksController);
-
-// ✅ Create a new account
-// (Fixed typo: it was './account' instead of '/account')
-server.post("/account", createAccountController);
-
+server.use( BankRoutes);
+server.use( AccountRoutes);
 
 // ========================== DATABASE CONNECTION ==========================
 
 // Connect to MongoDB Atlas database
 mongoose.connect(
-  'mongodb+srv://Banks:ZGToQq3HufBKPnYO@cluster0.quschgn.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
-)
+  process.env.MONGODB_URL)
 .then(() => console.log("✅ Connected to MongoDB"))
 .catch(err => console.error("❌ Database connection error:", err));
 
@@ -49,4 +34,4 @@ mongoose.connect(
 // ========================== SERVER START ==========================
 
 // Start the Express server on port 3000
-server.listen(3000, () => console.log("🚀 Server is running on port 3000"));
+server.listen(PORT, () => console.log("🚀 Server is running on port 3000"));
