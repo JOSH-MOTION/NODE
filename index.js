@@ -13,6 +13,7 @@ const server = express();
 // ========================== IMPORT ROUTES ==========================
 const BankRoutes = require("./routes/bankRoutes");
 const AccountRoutes = require("./routes/accountRoute");
+const UserRoutes = require("./routes/usersRoute");
 
 // Middleware to parse incoming JSON data
 server.use(express.json());
@@ -21,6 +22,7 @@ server.use(express.json());
 // ========================== ROUTES ==========================
 server.use( BankRoutes);
 server.use( AccountRoutes);
+server.use( UserRoutes);
 
 // ========================== DATABASE CONNECTION ==========================
 
